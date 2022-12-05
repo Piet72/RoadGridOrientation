@@ -1,7 +1,5 @@
 #----run this line if you haven't installed any of these packages yet
-install.packages(
-  c('sf', 'geosphere', 'osmdata', 'tidyverse', 'cowplot', 'svglite')
-)
+install.packages(c('sf', 'geosphere', 'osmdata', 'tidyverse', 'cowplot', 'svglite'))
 
 #----load up the necessary packages
 library(sf)
@@ -14,8 +12,7 @@ library(cowplot)
 #----Fill out this section with your info before running the rest of the code----
 
 #Pick a city to plot
-city <- 'Cervelló, Spain'
-
+city <- 'Barcelona, Spain'
 
 #---get the road network from OSM----
 
@@ -154,34 +151,50 @@ basicplot <- basicplot +
     xintercept = seq(0, 360, by = 45), 
     alpha = .2, 
     size = .1
-  ) +
-  geom_text(
-    size =1, 
-    color = 'grey', 
-    x = 22.5, 
-    y = as.double(max(plotdata$y)*.25+max(plotdata$y)*.07), 
-    label = round(max(plotdata$y)*.25,2)
-  ) +
-  geom_text(
-    size =1, 
-    color = 'grey', 
-    x = 22.5, 
-    y = as.double(max(plotdata$y)*.5+max(plotdata$y)*.07), 
-    label = round(max(plotdata$y)*.5,2)) +
-  geom_text(
-    size =1, 
-    color = 'grey', 
-    x = 22.5, 
-    y = as.double(max(plotdata$y)*.75+max(plotdata$y)*.07), 
-    label = round(max(plotdata$y)*.75,2)
-  ) +
-  geom_text(
-    size =1, 
-    color = 'grey', 
-    x = 22.5, 
-    y = as.double(max(plotdata$y)+max(plotdata$y)*.07), 
-    label = round(max(plotdata$y),2)
-  ) 
+  )
+  
+  # these labels generate very big filesizes when exporting to SVG.
+  # + geom_text(
+  #   size =1, 
+  #   color = 'grey', 
+  #   x = 22.5, 
+  #   y = as.double(max(plotdata$y)*.25+max(plotdata$y)*.07), 
+  #   label = round(max(plotdata$y)*.25,2)
+  # ) +
+  # geom_text(
+  #   size =1, 
+  #   color = 'grey', 
+  #   x = 22.5, 
+  #   y = as.double(max(plotdata$y)*.5+max(plotdata$y)*.07), 
+  #   label = round(max(plotdata$y)*.5,2)) +
+  # geom_text(
+  #   size =1, 
+  #   color = 'grey', 
+  #   x = 22.5, 
+  #   y = as.double(max(plotdata$y)*.75+max(plotdata$y)*.07), 
+  #   label = round(max(plotdata$y)*.75,2)
+  # ) +
+  # geom_text(
+  #   size =1, 
+  #   color = 'grey', 
+  #   x = 22.5, 
+  #   y = as.double(max(plotdata$y)+max(plotdata$y)*.07), 
+  #   label = round(max(plotdata$y),2)
+  # ) 
 
 #and save
-ggsave(paste0(city, ".svg"),  width = 24, height = 4, units = "in", dpi = 300)
+# ggsave(
+#   paste0(city, ".png"),  
+#   width = 24, 
+#   height = 24, 
+#   units = "in", 
+#   dpi = 72
+# )
+
+ggsave(
+  paste0(city, ".svg"),  
+  width = 24, 
+  height = 24, 
+  units = "in", 
+  dpi = 72
+)
