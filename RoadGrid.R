@@ -1,5 +1,7 @@
 #----run this line if you haven't installed any of these packages yet
-install.packages(c('sf', 'geosphere', 'osmdata', 'tidyverse', 'cowplot'))
+install.packages(
+  c('sf', 'geosphere', 'osmdata', 'tidyverse', 'cowplot', 'svglite')
+)
 
 #----load up the necessary packages
 library(sf)
@@ -12,7 +14,7 @@ library(cowplot)
 #----Fill out this section with your info before running the rest of the code----
 
 #Pick a city to plot
-city <- 'Barcelona, Spain'
+city <- 'Cervelló, Spain'
 
 
 #---get the road network from OSM----
@@ -21,9 +23,14 @@ city <- 'Barcelona, Spain'
 bb <- getbb(city)
 
 # build an overpass query
-qry <- opq(bbox = bb, timeout = 300) %>%
+qry <- opq(
+  bbox = bb, 
+  timeout = 300
+  ) %>%
   # add the ley feature 'highway' to the overpass query
-  add_osm_feature(key = 'highway') %>%
+  add_osm_feature(
+    key = 'highway'
+  ) %>%
   # get overpass query as an osmdata object in sf format
   # sf (simple features format: https://en.wikipedia.org/wiki/Simple_Features
   # how sf in R are organized: https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized
@@ -91,7 +98,6 @@ plot$b[plot$b< 0] <- plot$b[plot$b< 0]+360
 plot$b <- (round(plot$b/10,0)*10) %% 360 - 5
 
 
-
 #first get the basic plot ready
 basicplot <- ggplot(
   plot, 
@@ -130,6 +136,52 @@ theme(
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank()
 )
-  
+
+#then extract the data to make the labels
+plotdata <- ggplot_build(basicplot)$data[[1]]
+
+#and put it into its slot
+basicplot <- basicplot +
+  geom_hline(
+    yintercept = seq(.25, .75, by = .25)*max(plotdata$y), 
+    alpha = .2, 
+    size = .1
+  ) +
+  geom_hline(
+    yintercept = max(plotdata$y)
+  ) + 
+  geom_vline(
+    xintercept = seq(0, 360, by = 45), 
+    alpha = .2, 
+    size = .1
+  ) +
+  geom_text(
+    size =1, 
+    color = 'grey', 
+    x = 22.5, 
+    y = as.double(max(plotdata$y)*.25+max(plotdata$y)*.07), 
+    label = round(max(plotdata$y)*.25,2)
+  ) +
+  geom_text(
+    size =1, 
+    color = 'grey', 
+    x = 22.5, 
+    y = as.double(max(plotdata$y)*.5+max(plotdata$y)*.07), 
+    label = round(max(plotdata$y)*.5,2)) +
+  geom_text(
+    size =1, 
+    color = 'grey', 
+    x = 22.5, 
+    y = as.double(max(plotdata$y)*.75+max(plotdata$y)*.07), 
+    label = round(max(plotdata$y)*.75,2)
+  ) +
+  geom_text(
+    size =1, 
+    color = 'grey', 
+    x = 22.5, 
+    y = as.double(max(plotdata$y)+max(plotdata$y)*.07), 
+    label = round(max(plotdata$y),2)
+  ) 
+
 #and save
-ggsave(paste0(city, ".png"),  width = 24, height = 4, units = "in", dpi = 300)
+ggsave(paste0(city, ".svg"),  width = 24, height = 4, units = "in", dpi = 300)
