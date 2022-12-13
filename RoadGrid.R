@@ -208,8 +208,8 @@ generatePlot <- function(placename) {
 
 lapply(
   c(
-    #'London, United Kingdom',
-    'Chicago, USA'
+    'London'
+    #'Chicago, USA'
     #'Paris, France'
     #'Sidney, Australia'
     #'Sao Paulo, Brazil'
